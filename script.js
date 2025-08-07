@@ -8,16 +8,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const maxNumber = 10;
     const minNumber = 1;
 
+    const objects = ['🍎', '🚗', '🍌', '🏠', '⭐️', '🎸', '🐶', '☀️', '🚀', '🎈'];
+
     function updateDisplay() {
         // Update the number
         numberDisplay.textContent = currentNumber;
 
         // Update the objects
         objectsDisplay.innerHTML = ''; // Clear existing objects
+        const objectEmoji = objects[currentNumber - 1];
         for (let i = 0; i < currentNumber; i++) {
-            const dot = document.createElement('div');
-            dot.classList.add('dot');
-            objectsDisplay.appendChild(dot);
+            const object = document.createElement('div');
+            object.classList.add('object');
+            object.textContent = objectEmoji;
+            objectsDisplay.appendChild(object);
         }
 
         // Update button states
