@@ -9,6 +9,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const objects = ['🍎', '🚗', '🍌', '🏠', '⭐️', '🎸', '🐶', '☀️', '🚀', '🎈'];
 
+    function speakNumber() {
+        if ('speechSynthesis' in window) {
+            const utterance = ('SpeechSynthesisUtterance' in window)
+                ? new SpeechSynthesisUtterance(String(currentNumber))
+                : { text: String(currentNumber) };
+            if (typeof window.speechSynthesis.cancel === 'function') {
+                window.speechSynthesis.cancel();
+            }
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
     function updateDisplay() {
         // Clamp currentNumber in case objects array length changes
         currentNumber = Math.max(minNumber, Math.min(currentNumber, objects.length));
@@ -29,6 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update button states
         prevBtn.disabled = currentNumber === minNumber;
         nextBtn.disabled = currentNumber === objects.length;
+
+        speakNumber();
     }
 
     nextBtn.addEventListener('click', () => {
