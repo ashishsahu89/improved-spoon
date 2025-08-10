@@ -41,6 +41,18 @@ document.addEventListener('DOMContentLoaded', () => {
         { letter: 'Z', emoji: '🦓', word: 'Zebra' }
     ];
 
+    function speakNumber() {
+        if ('speechSynthesis' in window) {
+            const utterance = ('SpeechSynthesisUtterance' in window)
+                ? new SpeechSynthesisUtterance(String(currentNumber))
+                : { text: String(currentNumber) };
+            if (typeof window.speechSynthesis.cancel === 'function') {
+                window.speechSynthesis.cancel();
+            }
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
     function updateDisplay() {
         if (mode === 'numbers') {
             currentNumber = Math.max(minNumber, Math.min(currentNumber, numberObjects.length));
@@ -59,6 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
             spellingDisplay.textContent = '';
             prevBtn.disabled = currentNumber === minNumber;
             nextBtn.disabled = currentNumber === numberObjects.length;
+         
+
+        speakNumber();
         } else {
             currentLetterIndex = Math.max(0, Math.min(currentLetterIndex, alphabet.length - 1));
             const { letter, emoji, word } = alphabet[currentLetterIndex];
@@ -71,10 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
             object.textContent = emoji;
             objectsDisplay.appendChild(object);
 
+
             spellingDisplay.textContent = word;
             prevBtn.disabled = currentLetterIndex === 0;
             nextBtn.disabled = currentLetterIndex === alphabet.length - 1;
         }
+        
     }
 
     nextBtn.addEventListener('click', () => {
