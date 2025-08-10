@@ -45,4 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial display update
     updateDisplay();
+
+    // Expose internals for testing
+    window.app = {
+        get currentNumber() {
+            return currentNumber;
+        },
+        set currentNumber(value) {
+            currentNumber = value;
+        },
+        updateDisplay,
+        numberDisplay,
+        objectsDisplay,
+        prevBtn,
+        nextBtn
+    };
 });
