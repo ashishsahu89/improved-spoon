@@ -57,6 +57,19 @@ button {
 button:hover {
     background-color: #5a9bd8;
 }
+button:disabled {
+    cursor: not-allowed;
+}
+
+#prev-btn:disabled,
+#next-btn:disabled {
+    background-color: #a9a9a9; /* DarkGray */
+}
+
+#prev-btn:disabled:hover,
+#next-btn:disabled:hover {
+    background-color: #a9a9a9;
+}
 
 #prev-btn {
     background-color: #ff7f50; /* Coral */
