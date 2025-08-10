@@ -5,12 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextBtn = document.getElementById('next-btn');
 
     let currentNumber = 1;
-    const maxNumber = 10;
     const minNumber = 1;
 
     const objects = ['🍎', '🚗', '🍌', '🏠', '⭐️', '🎸', '🐶', '☀️', '🚀', '🎈'];
 
     function updateDisplay() {
+        // Clamp currentNumber in case objects array length changes
+        currentNumber = Math.max(minNumber, Math.min(currentNumber, objects.length));
+
         // Update the number
         numberDisplay.textContent = currentNumber;
 
@@ -26,11 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update button states
         prevBtn.disabled = currentNumber === minNumber;
-        nextBtn.disabled = currentNumber === maxNumber;
+        nextBtn.disabled = currentNumber === objects.length;
     }
 
     nextBtn.addEventListener('click', () => {
-        if (currentNumber < maxNumber) {
+        if (currentNumber < objects.length) {
             currentNumber++;
             updateDisplay();
         }
@@ -45,4 +47,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial display update
     updateDisplay();
+
+    // Expose internals for testing
+    window.app = {
+        get currentNumber() {
+            return currentNumber;
+        },
+        set currentNumber(value) {
+            currentNumber = value;
+        },
+        updateDisplay,
+        numberDisplay,
+        objectsDisplay,
+        prevBtn,
+        nextBtn
+    };
 });
