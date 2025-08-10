@@ -9,8 +9,10 @@ describe('updateDisplay', () => {
       get textContent() { return text; },
       set textContent(value) { text = String(value); },
       disabled: false,
+      value: '',
       _listeners: {},
       addEventListener(event, handler) { this._listeners[event] = handler; },
+      dispatchEvent(event) { const h = this._listeners[event.type]; h && h(event); },
       click() { this._listeners.click && this._listeners.click(); }
     };
   }
@@ -18,85 +20,23 @@ describe('updateDisplay', () => {
   function setup() {
     jest.resetModules();
 
-    const elements = {};
-
-    class Element {
-      constructor(tag) {
-        this.tagName = tag;
-        this.children = [];
-        this._innerHTML = '';
-        this._textContent = '';
-        this.disabled = false;
-        this.value = '';
-        this.classList = { add: () => {} };
-      }
-      appendChild(child) {
-        this.children.push(child);
-      }
-      set innerHTML(val) {
-        this._innerHTML = val;
-        if (val === '') this.children = [];
-      }
-      get innerHTML() {
-        return this._innerHTML;
-      }
-      set textContent(val) {
-        this._textContent = String(val);
-      }
-      get textContent() {
-        return this._textContent;
-      }
-      addEventListener(type, cb) {
-        this['on' + type] = cb;
-      }
-      dispatchEvent(event) {
-        const handler = this['on' + event.type];
-        if (handler) handler(event);
-      }
-      click() {
-        const handler = this.onclick || this['onclick'];
-        if (handler) handler();
-      }
-    }
-
-    global.document = {
-      getElementById: id => elements[id],
-      createElement: tag => new Element(tag),
-      addEventListener: (type, cb) => { if (type === 'DOMContentLoaded') cb(); },
-      body: { appendChild: () => {} }
-    };
-
-    global.window = {};
-
-    elements['number-display'] = new Element('div');
-    elements['objects-display'] = new Element('div');
-    elements['prev-btn'] = new Element('button');
-    elements['next-btn'] = new Element('button');
-    elements['mode-select'] = new Element('select');
-    elements['mode-select'].value = 'numbers';
-    elements['spelling-display'] = new Element('div');
-
-    require('./script.js');
-=======
     const elements = {
       'number-display': createMockElement(),
       'objects-display': createMockElement(),
       'prev-btn': createMockElement(),
       'next-btn': createMockElement(),
+      'mode-select': createMockElement(),
+      'spelling-display': createMockElement(),
     };
 
     const document = {
-      getElementById: (id) => elements[id],
+      getElementById: id => elements[id],
       createElement: () => createMockElement(),
       addEventListener(event, handler) {
-        if (event === 'DOMContentLoaded') {
-          this._onDOMContentLoaded = handler;
-        }
+        if (event === 'DOMContentLoaded') this._onLoad = handler;
       },
       dispatchEvent(event) {
-        if (event.type === 'DOMContentLoaded' && this._onDOMContentLoaded) {
-          this._onDOMContentLoaded();
-        }
+        if (event.type === 'DOMContentLoaded' && this._onLoad) this._onLoad();
       }
     };
 
@@ -123,6 +63,16 @@ describe('updateDisplay', () => {
     app.updateDisplay();
     expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
     expect(window.speechSynthesis.speak.mock.calls[0][0].text).toBe('3');
+  });
+
+  test('speaks the current letter', () => {
+    const app = setup();
+    app.modeSelect.value = 'alphabet';
+    app.modeSelect.dispatchEvent(new Event('change'));
+    window.speechSynthesis.speak.mockClear();
+    app.nextBtn.click();
+    expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
+    expect(window.speechSynthesis.speak.mock.calls[0][0].text).toBe('B');
   });
 
   test('Next and Previous buttons disable at boundaries', () => {
@@ -178,4 +128,3 @@ describe('updateDisplay', () => {
     expect(app.prevBtn.disabled).toBe(true);
   });
 });
-
