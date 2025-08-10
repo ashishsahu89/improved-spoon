@@ -22,6 +22,10 @@ body {
     margin-bottom: 20px;
 }
 
+.mode-select {
+    margin-bottom: 20px;
+}
+
 .objects-display {
     display: flex;
     flex-wrap: wrap;
@@ -35,6 +39,12 @@ body {
 
 .object {
     font-size: 40px;
+}
+
+.spelling-display {
+    font-size: 32px;
+    color: #4682b4; /* SteelBlue */
+    margin-bottom: 20px;
 }
 
 .buttons {
