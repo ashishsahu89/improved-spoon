@@ -1,13 +1,12 @@
-
 # improved-spoon
+
+A simple counting app that displays objects and now speaks the current number.
 
 ## Testing
 
-Install dependencies and run the test suite:
+Run the test suite:
 
-```
-npm install
+```bash
 npm test
 ```
 
-```
