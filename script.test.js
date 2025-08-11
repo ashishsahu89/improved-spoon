@@ -4,6 +4,7 @@ describe('updateDisplay', () => {
     return {
       children: [],
       classList: { add: jest.fn(), remove: jest.fn() },
+      style: {},
       appendChild(child) { this.children.push(child); },
       set innerHTML(value) { if (value === '') this.children = []; },
       get textContent() { return text; },
@@ -34,11 +35,23 @@ describe('updateDisplay', () => {
       'alphabet-prev-btn': createMockElement(),
       'alphabet-next-btn': createMockElement(),
       'alphabet-spelling-display': createMockElement(),
+      'color-display': createMockElement(),
+      'color-objects-display': createMockElement(),
+      'color-prev-btn': createMockElement(),
+      'color-next-btn': createMockElement(),
+      'color-spelling-display': createMockElement(),
+    };
+
+    const selectors = {
+      '.card-front': createMockElement(),
+      '.card-back': createMockElement(),
+      '.card-color': createMockElement(),
     };
 
     const document = {
       getElementById: id => elements[id],
       createElement: () => createMockElement(),
+      querySelector: sel => selectors[sel],
       _listeners: {},
       addEventListener(event, handler) { this._listeners[event] = handler; },
       dispatchEvent(event) { const h = this._listeners[event.type]; h && h(event); }
@@ -81,6 +94,23 @@ describe('updateDisplay', () => {
     expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(2);
     expect(window.speechSynthesis.speak.mock.calls[0][0].text).toBe('b');
     expect(window.speechSynthesis.speak.mock.calls[1][0].text).toBe('Bee');
+  });
+
+  test('color mode renders and speaks color names', () => {
+    const app = setup();
+    app.modeSelect.value = 'colors';
+    app.modeSelect.dispatchEvent(new Event('change'));
+    expect(app.numberDisplay.textContent).toBe('Red');
+    expect(app.objectsDisplay.children.length).toBe(1);
+    expect(app.objectsDisplay.children[0].textContent).toBe('🔴');
+
+    window.speechSynthesis.speak.mockClear();
+    app.nextBtn.click();
+    jest.runAllTimers();
+    expect(app.numberDisplay.textContent).toBe('Blue');
+    expect(app.objectsDisplay.children[0].textContent).toBe('🔵');
+    expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
+    expect(window.speechSynthesis.speak.mock.calls[0][0].text).toBe('Blue');
   });
 
   test('Next and Previous buttons disable at boundaries', () => {
