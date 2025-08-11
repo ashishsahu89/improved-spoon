@@ -11,7 +11,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const minNumber = 1;
     let mode = 'numbers';
 
-    const numberObjects = ['🍎', '🚗', '🍌', '🏠', '⭐️', '🎸', '🐶', '☀️', '🚀', '🎈'];
+    const numberObjects = [
+        { emoji: '🍎', singular: 'apple', plural: 'apples' },
+        { emoji: '🚗', singular: 'car', plural: 'cars' },
+        { emoji: '🍌', singular: 'banana', plural: 'bananas' },
+        { emoji: '🏠', singular: 'house', plural: 'houses' },
+        { emoji: '⭐️', singular: 'star', plural: 'stars' },
+        { emoji: '🎸', singular: 'guitar', plural: 'guitars' },
+        { emoji: '🐶', singular: 'dog', plural: 'dogs' },
+        { emoji: '☀️', singular: 'sun', plural: 'suns' },
+        { emoji: '🚀', singular: 'rocket', plural: 'rockets' },
+        { emoji: '🎈', singular: 'balloon', plural: 'balloons' }
+    ];
     const alphabet = [
         { letter: 'A', emoji: '🍎', word: 'Apple' },
         { letter: 'B', emoji: '🐝', word: 'Bee' },
@@ -41,6 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { letter: 'Z', emoji: '🦓', word: 'Zebra' }
     ];
 
+    let speakTimeout;
+
     function speak(text) {
         if ('speechSynthesis' in window) {
             const utterance = ('SpeechSynthesisUtterance' in window)
@@ -54,17 +67,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateDisplay() {
+        if (speakTimeout) {
+            clearTimeout(speakTimeout);
+            speakTimeout = null;
+        }
+
         if (mode === 'numbers') {
             currentNumber = Math.max(minNumber, Math.min(currentNumber, numberObjects.length));
 
             numberDisplay.textContent = currentNumber;
 
             objectsDisplay.innerHTML = '';
-            const objectEmoji = numberObjects[currentNumber - 1];
+            const { emoji, singular, plural } = numberObjects[currentNumber - 1];
             for (let i = 0; i < currentNumber; i++) {
                 const object = document.createElement('div');
                 object.classList.add('object');
-                object.textContent = objectEmoji;
+                object.textContent = emoji;
                 objectsDisplay.appendChild(object);
             }
 
@@ -73,6 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
             nextBtn.disabled = currentNumber === numberObjects.length;
 
             speak(currentNumber);
+            const word = currentNumber === 1 ? singular : plural;
+            speakTimeout = setTimeout(() => speak(`${currentNumber} ${word}`), 1000);
         } else {
             currentLetterIndex = Math.max(0, Math.min(currentLetterIndex, alphabet.length - 1));
             const { letter, emoji, word } = alphabet[currentLetterIndex];
@@ -91,8 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
             nextBtn.disabled = currentLetterIndex === alphabet.length - 1;
 
             speak(letter);
+            speakTimeout = setTimeout(() => speak(word), 1000);
         }
-        
+
     }
 
     nextBtn.addEventListener('click', () => {
