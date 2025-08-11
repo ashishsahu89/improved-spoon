@@ -29,6 +29,11 @@ describe('updateDisplay', () => {
       'mode-select': createMockElement(),
       'spelling-display': createMockElement(),
       'card': createMockElement(),
+      'letter-display': createMockElement(),
+      'alphabet-objects-display': createMockElement(),
+      'alphabet-prev-btn': createMockElement(),
+      'alphabet-next-btn': createMockElement(),
+      'alphabet-spelling-display': createMockElement(),
     };
 
     const document = {
