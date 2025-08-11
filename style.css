@@ -44,6 +44,10 @@ body {
     transform: rotateY(180deg);
 }
 
+.card-color {
+    display: none;
+}
+
 .number-display {
     font-size: 120px;
     color: #ff6347; /* Tomato */

@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const modeSelect = document.getElementById('mode-select');
     const card = document.getElementById('card');
+    const cardFront = document.querySelector('.card-front');
+    const cardBack = document.querySelector('.card-back');
+    const cardColor = document.querySelector('.card-color');
 
     const numberElements = {
         display: document.getElementById('number-display'),
@@ -18,13 +21,23 @@ document.addEventListener('DOMContentLoaded', () => {
         next: document.getElementById('alphabet-next-btn')
     };
 
+    const colorElements = {
+        display: document.getElementById('color-display'),
+        objects: document.getElementById('color-objects-display'),
+        spelling: document.getElementById('color-spelling-display'),
+        prev: document.getElementById('color-prev-btn'),
+        next: document.getElementById('color-next-btn')
+    };
+
     const elements = {
         numbers: numberElements,
-        alphabet: alphabetElements
+        alphabet: alphabetElements,
+        colors: colorElements
     };
 
     let currentNumber = 1;
     let currentLetterIndex = 0;
+    let currentColorIndex = 0;
     const minNumber = 1;
     let mode = 'numbers';
 
@@ -67,6 +80,15 @@ document.addEventListener('DOMContentLoaded', () => {
         { letter: 'X', emoji: '🎶', word: 'Xylophone' },
         { letter: 'Y', emoji: '🧶', word: 'Yarn' },
         { letter: 'Z', emoji: '🦓', word: 'Zebra' }
+    ];
+
+    const colors = [
+        { name: 'Red', emoji: '🔴' },
+        { name: 'Blue', emoji: '🔵' },
+        { name: 'Green', emoji: '🟢' },
+        { name: 'Yellow', emoji: '🟡' },
+        { name: 'Purple', emoji: '🟣' },
+        { name: 'Orange', emoji: '🟠' }
     ];
 
     let speakTimeout;
@@ -112,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
             speak(currentNumber);
             const word = currentNumber === 1 ? singular : plural;
             speakTimeout = setTimeout(() => speak(`${currentNumber} ${word}`), 1000);
-        } else {
+        } else if (mode === 'alphabet') {
             currentLetterIndex = Math.max(0, Math.min(currentLetterIndex, alphabet.length - 1));
             const { letter, emoji, word } = alphabet[currentLetterIndex];
 
@@ -130,6 +152,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             speak(letter.toLowerCase());
             speakTimeout = setTimeout(() => speak(word), 1000);
+        } else {
+            currentColorIndex = Math.max(0, Math.min(currentColorIndex, colors.length - 1));
+            const { name, emoji } = colors[currentColorIndex];
+
+            el.display.textContent = name;
+
+            el.objects.innerHTML = '';
+            const object = document.createElement('div');
+            object.classList.add('object');
+            object.textContent = emoji;
+            el.objects.appendChild(object);
+
+            el.spelling.textContent = '';
+            el.prev.disabled = currentColorIndex === 0;
+            el.next.disabled = currentColorIndex === colors.length - 1;
+
+            speak(name);
         }
 
     }
@@ -141,6 +180,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (mode === 'alphabet' && currentLetterIndex < alphabet.length - 1) {
             currentLetterIndex++;
             updateDisplay();
+        } else if (mode === 'colors' && currentColorIndex < colors.length - 1) {
+            currentColorIndex++;
+            updateDisplay();
         }
     }
 
@@ -151,22 +193,39 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (mode === 'alphabet' && currentLetterIndex > 0) {
             currentLetterIndex--;
             updateDisplay();
+        } else if (mode === 'colors' && currentColorIndex > 0) {
+            currentColorIndex--;
+            updateDisplay();
         }
     }
 
     numberElements.next.addEventListener('click', handleNext);
     alphabetElements.next.addEventListener('click', handleNext);
+    colorElements.next.addEventListener('click', handleNext);
     numberElements.prev.addEventListener('click', handlePrev);
     alphabetElements.prev.addEventListener('click', handlePrev);
+    colorElements.prev.addEventListener('click', handlePrev);
+
+    function showFace(currentMode) {
+        cardFront.style.display = currentMode === 'numbers' ? 'flex' : 'none';
+        cardBack.style.display = currentMode === 'alphabet' ? 'flex' : 'none';
+        cardColor.style.display = currentMode === 'colors' ? 'flex' : 'none';
+    }
 
     modeSelect.addEventListener('change', () => {
         mode = modeSelect.value;
         if (mode === 'numbers') {
             currentNumber = 1;
             card.classList.remove('flipped');
-        } else {
+            showFace('numbers');
+        } else if (mode === 'alphabet') {
             currentLetterIndex = 0;
             card.classList.add('flipped');
+            showFace('alphabet');
+        } else {
+            currentColorIndex = 0;
+            card.classList.remove('flipped');
+            showFace('colors');
         }
         updateDisplay();
     });
@@ -179,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    showFace('numbers');
     // Initial display update
     updateDisplay();
 
@@ -195,6 +255,12 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         set currentLetterIndex(value) {
             currentLetterIndex = value;
+        },
+        get currentColorIndex() {
+            return currentColorIndex;
+        },
+        set currentColorIndex(value) {
+            currentColorIndex = value;
         },
         get mode() {
             return mode;
