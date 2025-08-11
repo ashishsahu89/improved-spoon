@@ -8,13 +8,18 @@ describe('updateDisplay', () => {
       appendChild(child) { this.children.push(child); },
       set innerHTML(value) { if (value === '') this.children = []; },
       get textContent() { return text; },
-      set textContent(value) { text = String(value); },
+      set textContent(value) {
+        text = String(value);
+        this.scrollWidth = text.length * 10;
+      },
       disabled: false,
       value: '',
       _listeners: {},
       addEventListener(event, handler) { this._listeners[event] = handler; },
       dispatchEvent(event) { const h = this._listeners[event.type]; h && h(event); },
-      click() { this._listeners.click && this._listeners.click(); }
+      click() { this._listeners.click && this._listeners.click(); },
+      clientWidth: 360,
+      scrollWidth: 0
     };
   }
 
@@ -111,6 +116,36 @@ describe('updateDisplay', () => {
     expect(app.objectsDisplay.children[0].textContent).toBe('🔵');
     expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
     expect(window.speechSynthesis.speak.mock.calls[0][0].text).toBe('Blue');
+  });
+
+  test('all colors display correct data and styling without overflow', () => {
+    const expectedColors = [
+      { name: 'Red', emoji: '🔴', hex: '#FF0000' },
+      { name: 'Blue', emoji: '🔵', hex: '#0000FF' },
+      { name: 'Green', emoji: '🟢', hex: '#008000' },
+      { name: 'Yellow', emoji: '🟡', hex: '#FFFF00' },
+      { name: 'Purple', emoji: '🟣', hex: '#800080' },
+      { name: 'Orange', emoji: '🟠', hex: '#FFA500' },
+      { name: 'Pink', emoji: '💗', hex: '#FF69B4' },
+      { name: 'Brown', emoji: '🟤', hex: '#A52A2A' },
+      { name: 'Black', emoji: '⚫', hex: '#000000' },
+      { name: 'White', emoji: '⚪', hex: '#FFFFFF' }
+    ];
+
+    const app = setup();
+    app.modeSelect.value = 'colors';
+    app.modeSelect.dispatchEvent(new Event('change'));
+
+    expectedColors.forEach((color, index) => {
+      expect(app.numberDisplay.textContent).toBe(color.name);
+      expect(app.numberDisplay.style.color).toBe(color.hex);
+      expect(app.objectsDisplay.children[0].textContent).toBe(color.emoji);
+      expect(app.numberDisplay.scrollWidth).toBeLessThanOrEqual(app.numberDisplay.clientWidth);
+
+      if (index < expectedColors.length - 1) {
+        app.nextBtn.click();
+      }
+    });
   });
 
   test('Next and Previous buttons disable at boundaries', () => {
