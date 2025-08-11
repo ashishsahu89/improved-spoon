@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextBtn = document.getElementById('next-btn');
     const modeSelect = document.getElementById('mode-select');
     const spellingDisplay = document.getElementById('spelling-display');
+    const card = document.getElementById('card');
 
     let currentNumber = 1;
     let currentLetterIndex = 0;
@@ -110,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             prevBtn.disabled = currentLetterIndex === 0;
             nextBtn.disabled = currentLetterIndex === alphabet.length - 1;
 
-            speak(letter);
+            speak(letter.toLowerCase());
             speakTimeout = setTimeout(() => speak(word), 1000);
         }
 
@@ -143,7 +144,17 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             currentLetterIndex = 0;
         }
+        card.classList.add('flip');
+        setTimeout(() => card.classList.remove('flip'), 600);
         updateDisplay();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+            nextBtn.click();
+        } else if (e.key === 'ArrowLeft') {
+            prevBtn.click();
+        }
     });
 
     // Initial display update

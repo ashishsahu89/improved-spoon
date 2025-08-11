@@ -3,7 +3,7 @@ describe('updateDisplay', () => {
     let text = '';
     return {
       children: [],
-      classList: { add: jest.fn() },
+      classList: { add: jest.fn(), remove: jest.fn() },
       appendChild(child) { this.children.push(child); },
       set innerHTML(value) { if (value === '') this.children = []; },
       get textContent() { return text; },
@@ -28,17 +28,15 @@ describe('updateDisplay', () => {
       'next-btn': createMockElement(),
       'mode-select': createMockElement(),
       'spelling-display': createMockElement(),
+      'card': createMockElement(),
     };
 
     const document = {
       getElementById: id => elements[id],
       createElement: () => createMockElement(),
-      addEventListener(event, handler) {
-        if (event === 'DOMContentLoaded') this._onLoad = handler;
-      },
-      dispatchEvent(event) {
-        if (event.type === 'DOMContentLoaded' && this._onLoad) this._onLoad();
-      }
+      _listeners: {},
+      addEventListener(event, handler) { this._listeners[event] = handler; },
+      dispatchEvent(event) { const h = this._listeners[event.type]; h && h(event); }
     };
 
     global.document = document;
@@ -76,7 +74,7 @@ describe('updateDisplay', () => {
     app.nextBtn.click();
     jest.runAllTimers();
     expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(2);
-    expect(window.speechSynthesis.speak.mock.calls[0][0].text).toBe('B');
+    expect(window.speechSynthesis.speak.mock.calls[0][0].text).toBe('b');
     expect(window.speechSynthesis.speak.mock.calls[1][0].text).toBe('Bee');
   });
 
@@ -131,5 +129,15 @@ describe('updateDisplay', () => {
     }
     expect(app.numberDisplay.textContent).toBe('A');
     expect(app.prevBtn.disabled).toBe(true);
+  });
+
+  test('arrow keys navigate numbers', () => {
+    const app = setup();
+    app.currentNumber = 1;
+    app.updateDisplay();
+    document.dispatchEvent({ type: 'keydown', key: 'ArrowRight' });
+    expect(app.currentNumber).toBe(2);
+    document.dispatchEvent({ type: 'keydown', key: 'ArrowLeft' });
+    expect(app.currentNumber).toBe(1);
   });
 });
