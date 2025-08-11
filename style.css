@@ -76,6 +76,10 @@ body {
     margin: 0 auto 20px;
 }
 
+#objects-display .object {
+    font-size: 40px;
+}
+
 .object {
     font-size: 100px;
 }
