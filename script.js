@@ -1,11 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const numberDisplay = document.getElementById('number-display');
-    const objectsDisplay = document.getElementById('objects-display');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
     const modeSelect = document.getElementById('mode-select');
-    const spellingDisplay = document.getElementById('spelling-display');
     const card = document.getElementById('card');
+
+    const numberElements = {
+        display: document.getElementById('number-display'),
+        objects: document.getElementById('objects-display'),
+        spelling: document.getElementById('spelling-display'),
+        prev: document.getElementById('prev-btn'),
+        next: document.getElementById('next-btn')
+    };
+
+    const alphabetElements = {
+        display: document.getElementById('letter-display'),
+        objects: document.getElementById('alphabet-objects-display'),
+        spelling: document.getElementById('alphabet-spelling-display'),
+        prev: document.getElementById('alphabet-prev-btn'),
+        next: document.getElementById('alphabet-next-btn')
+    };
+
+    const elements = {
+        numbers: numberElements,
+        alphabet: alphabetElements
+    };
 
     let currentNumber = 1;
     let currentLetterIndex = 0;
@@ -73,23 +89,25 @@ document.addEventListener('DOMContentLoaded', () => {
             speakTimeout = null;
         }
 
+        const el = elements[mode];
+
         if (mode === 'numbers') {
             currentNumber = Math.max(minNumber, Math.min(currentNumber, numberObjects.length));
 
-            numberDisplay.textContent = currentNumber;
+            el.display.textContent = currentNumber;
 
-            objectsDisplay.innerHTML = '';
+            el.objects.innerHTML = '';
             const { emoji, singular, plural } = numberObjects[currentNumber - 1];
             for (let i = 0; i < currentNumber; i++) {
                 const object = document.createElement('div');
                 object.classList.add('object');
                 object.textContent = emoji;
-                objectsDisplay.appendChild(object);
+                el.objects.appendChild(object);
             }
 
-            spellingDisplay.textContent = '';
-            prevBtn.disabled = currentNumber === minNumber;
-            nextBtn.disabled = currentNumber === numberObjects.length;
+            el.spelling.textContent = '';
+            el.prev.disabled = currentNumber === minNumber;
+            el.next.disabled = currentNumber === numberObjects.length;
 
             speak(currentNumber);
             const word = currentNumber === 1 ? singular : plural;
@@ -98,18 +116,17 @@ document.addEventListener('DOMContentLoaded', () => {
             currentLetterIndex = Math.max(0, Math.min(currentLetterIndex, alphabet.length - 1));
             const { letter, emoji, word } = alphabet[currentLetterIndex];
 
-            numberDisplay.textContent = letter;
+            el.display.textContent = letter;
 
-            objectsDisplay.innerHTML = '';
+            el.objects.innerHTML = '';
             const object = document.createElement('div');
             object.classList.add('object');
             object.textContent = emoji;
-            objectsDisplay.appendChild(object);
+            el.objects.appendChild(object);
 
-
-            spellingDisplay.textContent = word;
-            prevBtn.disabled = currentLetterIndex === 0;
-            nextBtn.disabled = currentLetterIndex === alphabet.length - 1;
+            el.spelling.textContent = word;
+            el.prev.disabled = currentLetterIndex === 0;
+            el.next.disabled = currentLetterIndex === alphabet.length - 1;
 
             speak(letter.toLowerCase());
             speakTimeout = setTimeout(() => speak(word), 1000);
@@ -117,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-    nextBtn.addEventListener('click', () => {
+    function handleNext() {
         if (mode === 'numbers' && currentNumber < numberObjects.length) {
             currentNumber++;
             updateDisplay();
@@ -125,9 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
             currentLetterIndex++;
             updateDisplay();
         }
-    });
+    }
 
-    prevBtn.addEventListener('click', () => {
+    function handlePrev() {
         if (mode === 'numbers' && currentNumber > minNumber) {
             currentNumber--;
             updateDisplay();
@@ -135,25 +152,30 @@ document.addEventListener('DOMContentLoaded', () => {
             currentLetterIndex--;
             updateDisplay();
         }
-    });
+    }
+
+    numberElements.next.addEventListener('click', handleNext);
+    alphabetElements.next.addEventListener('click', handleNext);
+    numberElements.prev.addEventListener('click', handlePrev);
+    alphabetElements.prev.addEventListener('click', handlePrev);
 
     modeSelect.addEventListener('change', () => {
         mode = modeSelect.value;
         if (mode === 'numbers') {
             currentNumber = 1;
+            card.classList.remove('flipped');
         } else {
             currentLetterIndex = 0;
+            card.classList.add('flipped');
         }
-        card.classList.add('flip');
-        setTimeout(() => card.classList.remove('flip'), 600);
         updateDisplay();
     });
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowRight') {
-            nextBtn.click();
+            handleNext();
         } else if (e.key === 'ArrowLeft') {
-            prevBtn.click();
+            handlePrev();
         }
     });
 
@@ -181,11 +203,21 @@ document.addEventListener('DOMContentLoaded', () => {
             mode = value;
         },
         updateDisplay,
-        numberDisplay,
-        objectsDisplay,
-        prevBtn,
-        nextBtn,
+        get numberDisplay() {
+            return elements[mode].display;
+        },
+        get objectsDisplay() {
+            return elements[mode].objects;
+        },
+        get prevBtn() {
+            return elements[mode].prev;
+        },
+        get nextBtn() {
+            return elements[mode].next;
+        },
         modeSelect,
-        spellingDisplay
+        get spellingDisplay() {
+            return elements[mode].spelling;
+        }
     };
 });

@@ -7,22 +7,33 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container" id="card">
-        <div class="mode-select">
-            <label for="mode-select">Learn:</label>
-            <select id="mode-select">
-                <option value="numbers">Numbers</option>
-                <option value="alphabet">Alphabet</option>
-            </select>
+    <div class="mode-select">
+        <label for="mode-select">Learn:</label>
+        <select id="mode-select">
+            <option value="numbers">Numbers</option>
+            <option value="alphabet">Alphabet</option>
+        </select>
+    </div>
+    <div class="card" id="card">
+        <div class="card-face card-front">
+            <div id="number-display" class="number-display">1</div>
+            <div id="objects-display" class="objects-display">
+                <div class="dot"></div>
+            </div>
+            <div id="spelling-display" class="spelling-display"></div>
+            <div class="buttons">
+                <button id="prev-btn">Previous</button>
+                <button id="next-btn">Next</button>
+            </div>
         </div>
-        <div id="number-display" class="number-display">1</div>
-        <div id="objects-display" class="objects-display">
-            <div class="dot"></div>
-        </div>
-        <div id="spelling-display" class="spelling-display"></div>
-        <div class="buttons">
-            <button id="prev-btn">Previous</button>
-            <button id="next-btn">Next</button>
+        <div class="card-face card-back">
+            <div id="letter-display" class="number-display">A</div>
+            <div id="alphabet-objects-display" class="objects-display"></div>
+            <div id="alphabet-spelling-display" class="spelling-display"></div>
+            <div class="buttons">
+                <button id="alphabet-prev-btn">Previous</button>
+                <button id="alphabet-next-btn">Next</button>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
