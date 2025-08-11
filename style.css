@@ -61,7 +61,7 @@ body {
     max-width: 100%;
 }
 
-/* Theme previous/next buttons while viewing colors */
+
 .card-color .buttons button {
     transition: filter 0.3s;
 }
@@ -69,6 +69,7 @@ body {
 .card-color .buttons button:hover {
     filter: brightness(1.1);
 }
+
 
 .mode-select {
     margin-bottom: 20px;
@@ -85,8 +86,13 @@ body {
     margin: 0 auto 20px;
 }
 
+
 .object {
     font-size: 100px;
+}
+
+#objects-display .object {
+    font-size: 40px;
 }
 
 .spelling-display {
