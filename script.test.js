@@ -19,6 +19,7 @@ describe('updateDisplay', () => {
 
   function setup() {
     jest.resetModules();
+    jest.useFakeTimers();
 
     const elements = {
       'number-display': createMockElement(),
@@ -61,8 +62,10 @@ describe('updateDisplay', () => {
     window.speechSynthesis.speak.mockClear();
     app.currentNumber = 3;
     app.updateDisplay();
-    expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
+    jest.runAllTimers();
+    expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(2);
     expect(window.speechSynthesis.speak.mock.calls[0][0].text).toBe('3');
+    expect(window.speechSynthesis.speak.mock.calls[1][0].text).toBe('3 bananas');
   });
 
   test('speaks the current letter', () => {
@@ -71,8 +74,10 @@ describe('updateDisplay', () => {
     app.modeSelect.dispatchEvent(new Event('change'));
     window.speechSynthesis.speak.mockClear();
     app.nextBtn.click();
-    expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
+    jest.runAllTimers();
+    expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(2);
     expect(window.speechSynthesis.speak.mock.calls[0][0].text).toBe('B');
+    expect(window.speechSynthesis.speak.mock.calls[1][0].text).toBe('Bee');
   });
 
   test('Next and Previous buttons disable at boundaries', () => {
