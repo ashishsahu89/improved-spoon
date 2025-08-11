@@ -54,6 +54,22 @@ body {
     margin-bottom: 20px;
 }
 
+/* Adjust color word size and prevent overflow */
+.card-color .number-display {
+    font-size: 80px;
+    word-break: break-word;
+    max-width: 100%;
+}
+
+/* Theme previous/next buttons while viewing colors */
+.card-color .buttons button {
+    transition: filter 0.3s;
+}
+
+.card-color .buttons button:hover {
+    filter: brightness(1.1);
+}
+
 .mode-select {
     margin-bottom: 20px;
 }
@@ -70,7 +86,7 @@ body {
 }
 
 .object {
-    font-size: 40px;
+    font-size: 100px;
 }
 
 .spelling-display {
@@ -106,23 +122,17 @@ button:disabled {
 #prev-btn:disabled,
 #next-btn:disabled,
 #alphabet-prev-btn:disabled,
-#alphabet-next-btn:disabled {
+#alphabet-next-btn:disabled,
+#color-prev-btn:disabled,
+#color-next-btn:disabled {
     background-color: #a9a9a9; /* DarkGray */
 }
 
 #prev-btn:disabled:hover,
 #next-btn:disabled:hover,
 #alphabet-prev-btn:disabled:hover,
-#alphabet-next-btn:disabled:hover {
+#alphabet-next-btn:disabled:hover,
+#color-prev-btn:disabled:hover,
+#color-next-btn:disabled:hover {
     background-color: #a9a9a9;
-}
-
-#prev-btn,
-#alphabet-prev-btn {
-    background-color: #ff7f50; /* Coral */
-}
-
-#prev-btn:hover,
-#alphabet-prev-btn:hover {
-    background-color: #ff9f7a;
 }
