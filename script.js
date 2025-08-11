@@ -173,6 +173,14 @@ document.addEventListener('DOMContentLoaded', () => {
             el.prev.disabled = currentColorIndex === 0;
             el.next.disabled = currentColorIndex === colors.length - 1;
 
+            const textColor = hex.toLowerCase() === '#ffffff' ? '#000000' : '#ffffff';
+            const applyBtnStyle = (btn) => {
+                btn.style.backgroundColor = btn.disabled ? '#a9a9a9' : hex;
+                btn.style.color = btn.disabled ? '#ffffff' : textColor;
+            };
+            applyBtnStyle(el.prev);
+            applyBtnStyle(el.next);
+
             speak(name);
         }
 

@@ -142,6 +142,22 @@ describe('updateDisplay', () => {
       expect(app.objectsDisplay.children[0].textContent).toBe(color.emoji);
       expect(app.numberDisplay.scrollWidth).toBeLessThanOrEqual(app.numberDisplay.clientWidth);
 
+      expect(app.prevBtn.style.backgroundColor).toBe(
+        app.prevBtn.disabled ? '#a9a9a9' : color.hex
+      );
+      expect(app.nextBtn.style.backgroundColor).toBe(
+        app.nextBtn.disabled ? '#a9a9a9' : color.hex
+      );
+      
+      const expectedText = color.hex.toLowerCase() === '#ffffff' ? '#000000' : '#ffffff';
+      
+      if (!app.prevBtn.disabled) {
+        expect(app.prevBtn.style.color).toBe(expectedText);
+      }
+      if (!app.nextBtn.disabled) {
+        expect(app.nextBtn.style.color).toBe(expectedText);
+      }
+
       if (index < expectedColors.length - 1) {
         app.nextBtn.click();
       }
