@@ -83,12 +83,16 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const colors = [
-        { name: 'Red', emoji: '🔴' },
-        { name: 'Blue', emoji: '🔵' },
-        { name: 'Green', emoji: '🟢' },
-        { name: 'Yellow', emoji: '🟡' },
-        { name: 'Purple', emoji: '🟣' },
-        { name: 'Orange', emoji: '🟠' }
+        { name: 'Red', emoji: '🔴', hex: '#FF0000' },
+        { name: 'Blue', emoji: '🔵', hex: '#0000FF' },
+        { name: 'Green', emoji: '🟢', hex: '#008000' },
+        { name: 'Yellow', emoji: '🟡', hex: '#FFFF00' },
+        { name: 'Purple', emoji: '🟣', hex: '#800080' },
+        { name: 'Orange', emoji: '🟠', hex: '#FFA500' },
+        { name: 'Pink', emoji: '💗', hex: '#FF69B4' },
+        { name: 'Brown', emoji: '🟤', hex: '#A52A2A' },
+        { name: 'Black', emoji: '⚫', hex: '#000000' },
+        { name: 'White', emoji: '⚪', hex: '#FFFFFF' }
     ];
 
     let speakTimeout;
@@ -154,9 +158,10 @@ document.addEventListener('DOMContentLoaded', () => {
             speakTimeout = setTimeout(() => speak(word), 1000);
         } else {
             currentColorIndex = Math.max(0, Math.min(currentColorIndex, colors.length - 1));
-            const { name, emoji } = colors[currentColorIndex];
+            const { name, emoji, hex } = colors[currentColorIndex];
 
             el.display.textContent = name;
+            el.display.style.color = hex;
 
             el.objects.innerHTML = '';
             const object = document.createElement('div');
