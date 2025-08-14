@@ -1,6 +1,6 @@
 # improved-spoon
 
-A simple counting app that displays objects and now speaks the current number.
+A simple learning app that displays objects and speaks their names. Learn numbers, the alphabet, colors, shapes, vegetables, and fruits.
 
 ## Testing
 
