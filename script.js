@@ -329,45 +329,37 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleNext() {
         if (mode === 'numbers' && currentNumber < numberObjects.length) {
             currentNumber++;
-            updateDisplay();
         } else if (mode === 'alphabet' && currentLetterIndex < alphabet.length - 1) {
             currentLetterIndex++;
-            updateDisplay();
         } else if (mode === 'colors' && currentColorIndex < colors.length - 1) {
             currentColorIndex++;
-            updateDisplay();
         } else if (mode === 'shapes' && currentShapeIndex < shapes.length - 1) {
             currentShapeIndex++;
-            updateDisplay();
         } else if (mode === 'vegetables' && currentVegetableIndex < vegetables.length - 1) {
             currentVegetableIndex++;
-            updateDisplay();
         } else if (mode === 'fruits' && currentFruitIndex < fruits.length - 1) {
             currentFruitIndex++;
-            updateDisplay();
         }
+
+        updateDisplay();
     }
 
     function handlePrev() {
         if (mode === 'numbers' && currentNumber > minNumber) {
             currentNumber--;
-            updateDisplay();
         } else if (mode === 'alphabet' && currentLetterIndex > 0) {
             currentLetterIndex--;
-            updateDisplay();
         } else if (mode === 'colors' && currentColorIndex > 0) {
             currentColorIndex--;
-            updateDisplay();
         } else if (mode === 'shapes' && currentShapeIndex > 0) {
             currentShapeIndex--;
-            updateDisplay();
         } else if (mode === 'vegetables' && currentVegetableIndex > 0) {
             currentVegetableIndex--;
-            updateDisplay();
         } else if (mode === 'fruits' && currentFruitIndex > 0) {
             currentFruitIndex--;
-            updateDisplay();
         }
+
+        updateDisplay();
     }
 
     numberElements.next.addEventListener('click', handleNext);
