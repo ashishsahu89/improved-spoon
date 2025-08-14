@@ -1,3 +1,9 @@
+document.addEventListener('touchstart', (evt) => {
+    if (evt.touches.length > 1) {
+        evt.preventDefault();
+    }
+}, { passive: false });
+
 document.addEventListener('DOMContentLoaded', () => {
     const modeSelect = document.getElementById('mode-select');
     const card = document.getElementById('card');
