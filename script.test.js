@@ -45,12 +45,30 @@ describe('updateDisplay', () => {
       'color-prev-btn': createMockElement(),
       'color-next-btn': createMockElement(),
       'color-spelling-display': createMockElement(),
+      'shape-display': createMockElement(),
+      'shape-objects-display': createMockElement(),
+      'shape-prev-btn': createMockElement(),
+      'shape-next-btn': createMockElement(),
+      'shape-spelling-display': createMockElement(),
+      'vegetable-display': createMockElement(),
+      'vegetable-objects-display': createMockElement(),
+      'vegetable-prev-btn': createMockElement(),
+      'vegetable-next-btn': createMockElement(),
+      'vegetable-spelling-display': createMockElement(),
+      'fruit-display': createMockElement(),
+      'fruit-objects-display': createMockElement(),
+      'fruit-prev-btn': createMockElement(),
+      'fruit-next-btn': createMockElement(),
+      'fruit-spelling-display': createMockElement(),
     };
 
     const selectors = {
       '.card-front': createMockElement(),
       '.card-back': createMockElement(),
       '.card-color': createMockElement(),
+      '.card-shapes': createMockElement(),
+      '.card-vegetables': createMockElement(),
+      '.card-fruits': createMockElement(),
     };
 
     const document = {
@@ -155,6 +173,22 @@ describe('updateDisplay', () => {
       expect(app.objectsDisplay.children[0].textContent).toBe(color.emoji);
       expect(app.numberDisplay.scrollWidth).toBeLessThanOrEqual(app.numberDisplay.clientWidth);
 
+      expect(app.prevBtn.style.backgroundColor).toBe(
+        app.prevBtn.disabled ? '#a9a9a9' : color.hex
+      );
+      expect(app.nextBtn.style.backgroundColor).toBe(
+        app.nextBtn.disabled ? '#a9a9a9' : color.hex
+      );
+      
+      const expectedText = color.hex.toLowerCase() === '#ffffff' ? '#000000' : '#ffffff';
+      
+      if (!app.prevBtn.disabled) {
+        expect(app.prevBtn.style.color).toBe(expectedText);
+      }
+      if (!app.nextBtn.disabled) {
+        expect(app.nextBtn.style.color).toBe(expectedText);
+      }
+
       if (index < expectedColors.length - 1) {
         app.nextBtn.click();
       }
@@ -212,6 +246,48 @@ describe('updateDisplay', () => {
     }
     expect(app.numberDisplay.textContent).toBe('A');
     expect(app.prevBtn.disabled).toBe(true);
+  });
+
+  test('shape mode displays shapes and disables navigation at boundaries', () => {
+    const app = setup();
+    app.modeSelect.value = 'shapes';
+    app.modeSelect.dispatchEvent(new Event('change'));
+    expect(app.numberDisplay.textContent).toBe('Circle');
+    expect(app.objectsDisplay.children[0].textContent).toBe('⚪');
+    expect(app.prevBtn.disabled).toBe(true);
+    let count = 1;
+    while (!app.nextBtn.disabled) {
+      app.nextBtn.click();
+      count++;
+    }
+    expect(count).toBe(10);
+    expect(app.numberDisplay.textContent).toBe('Rectangle');
+  });
+
+  test('vegetables and fruits modes have correct counts', () => {
+    const app = setup();
+
+    app.modeSelect.value = 'vegetables';
+    app.modeSelect.dispatchEvent(new Event('change'));
+    expect(app.numberDisplay.textContent).toBe('Carrot');
+    let vegCount = 1;
+    while (!app.nextBtn.disabled) {
+      app.nextBtn.click();
+      vegCount++;
+    }
+    expect(vegCount).toBe(20);
+    expect(app.numberDisplay.textContent).toBe('Radish');
+
+    app.modeSelect.value = 'fruits';
+    app.modeSelect.dispatchEvent(new Event('change'));
+    expect(app.numberDisplay.textContent).toBe('Apple');
+    let fruitCount = 1;
+    while (!app.nextBtn.disabled) {
+      app.nextBtn.click();
+      fruitCount++;
+    }
+    expect(fruitCount).toBe(20);
+    expect(app.numberDisplay.textContent).toBe('Tangerine');
   });
 
   test('arrow keys navigate numbers', () => {

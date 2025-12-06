@@ -85,8 +85,22 @@ body {
         2px 0 0 #333;
 }
 
+.card-color .buttons button {
+    transition: filter 0.3s;
+}
+
+.card-color .buttons button:hover {
+    filter: brightness(1.1);
+}
+
 .mode-select {
     margin-bottom: 20px;
+}
+
+.mode-select select {
+    font-size: 24px;
+    padding: 10px;
+    min-width: 200px;
 }
 
 .objects-display {
@@ -102,6 +116,7 @@ body {
     margin: 0 auto 15px;
     overflow: hidden;
 }
+
 
 .object {
     font-size: 50px;
@@ -121,10 +136,16 @@ body {
     font-size: 35px;
 }
 
+#objects-display .object {
+    font-size: 40px;
+}
+
 .spelling-display {
-    font-size: 32px;
+    font-size: clamp(24px, 6vw, 32px);
     color: #4682b4; /* SteelBlue */
     margin-bottom: 20px;
+    max-width: 100%;
+    word-break: break-word;
 }
 
 .buttons {

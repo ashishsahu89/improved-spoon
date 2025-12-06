@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Counting Fun!</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,6 +13,9 @@
             <option value="numbers">Numbers</option>
             <option value="alphabet">Alphabet</option>
             <option value="colors">Colors</option>
+            <option value="shapes">Shapes</option>
+            <option value="vegetables">Vegetables</option>
+            <option value="fruits">Fruits</option>
         </select>
     </div>
     <div class="card" id="card">
@@ -41,6 +44,39 @@
             <div class="buttons">
                 <button id="color-prev-btn">Previous</button>
                 <button id="color-next-btn">Next</button>
+            </div>
+        </div>
+        <div class="card-face card-shapes">
+            <div id="shape-display" class="number-display">Circle</div>
+            <div id="shape-objects-display" class="objects-display">
+                <div class="dot"></div>
+            </div>
+            <div id="shape-spelling-display" class="spelling-display"></div>
+            <div class="buttons">
+                <button id="shape-prev-btn">Previous</button>
+                <button id="shape-next-btn">Next</button>
+            </div>
+        </div>
+        <div class="card-face card-vegetables">
+            <div id="vegetable-display" class="number-display">Carrot</div>
+            <div id="vegetable-objects-display" class="objects-display">
+                <div class="dot"></div>
+            </div>
+            <div id="vegetable-spelling-display" class="spelling-display"></div>
+            <div class="buttons">
+                <button id="vegetable-prev-btn">Previous</button>
+                <button id="vegetable-next-btn">Next</button>
+            </div>
+        </div>
+        <div class="card-face card-fruits">
+            <div id="fruit-display" class="number-display">Apple</div>
+            <div id="fruit-objects-display" class="objects-display">
+                <div class="dot"></div>
+            </div>
+            <div id="fruit-spelling-display" class="spelling-display"></div>
+            <div class="buttons">
+                <button id="fruit-prev-btn">Previous</button>
+                <button id="fruit-next-btn">Next</button>
             </div>
         </div>
     </div>
