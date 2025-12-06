@@ -63,13 +63,32 @@ body {
     font-size: 120px;
     color: #ff6347; /* Tomato */
     margin-bottom: 20px;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    text-align: center;
+    line-height: 1.1;
 }
 
-/* Adjust color word size and prevent overflow */
-.card-color .number-display {
-    font-size: 80px;
+/* Responsive text sizing for word displays (colors, shapes, vegetables, fruits) */
+.word-display {
+    font-size: clamp(32px, 12vw, 80px);
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    padding: 0 10px;
+}
+
+/* Adjust word size and prevent overflow for text-based modes */
+.card-color .number-display,
+.card-shapes .number-display,
+.card-vegetables .number-display,
+.card-fruits .number-display {
+    font-size: clamp(36px, 12vw, 72px);
     word-break: break-word;
     max-width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
 }
 
 /* Text outline for colors that don't show well on white background */
@@ -217,8 +236,11 @@ button:disabled:active {
         margin-bottom: 15px;
     }
 
-    .card-color .number-display {
-        font-size: 60px;
+    .card-color .number-display,
+    .card-shapes .number-display,
+    .card-vegetables .number-display,
+    .card-fruits .number-display {
+        font-size: clamp(28px, 10vw, 50px);
     }
 
     .objects-display {
