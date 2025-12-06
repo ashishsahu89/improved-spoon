@@ -86,26 +86,55 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Red', emoji: '🔴', hex: '#FF0000' },
         { name: 'Blue', emoji: '🔵', hex: '#0000FF' },
         { name: 'Green', emoji: '🟢', hex: '#008000' },
-        { name: 'Yellow', emoji: '🟡', hex: '#FFFF00' },
+        { name: 'Yellow', emoji: '🟡', hex: '#DAA520' },
         { name: 'Purple', emoji: '🟣', hex: '#800080' },
         { name: 'Orange', emoji: '🟠', hex: '#FFA500' },
         { name: 'Pink', emoji: '💗', hex: '#FF69B4' },
         { name: 'Brown', emoji: '🟤', hex: '#A52A2A' },
         { name: 'Black', emoji: '⚫', hex: '#000000' },
-        { name: 'White', emoji: '⚪', hex: '#FFFFFF' }
+        { name: 'White', emoji: '⚪', hex: '#FFFFFF', needsOutline: true }
     ];
 
     let speakTimeout;
+    let voicesLoaded = false;
+
+    // Preload voices to fix speech synthesis race condition
+    function initVoices() {
+        if ('speechSynthesis' in window) {
+            const voices = window.speechSynthesis.getVoices();
+            if (voices.length > 0) {
+                voicesLoaded = true;
+            }
+        }
+    }
+
+    if ('speechSynthesis' in window) {
+        initVoices();
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = initVoices;
+        }
+    }
+
+    function cancelSpeech() {
+        if ('speechSynthesis' in window && typeof window.speechSynthesis.cancel === 'function') {
+            window.speechSynthesis.cancel();
+        }
+        if (speakTimeout) {
+            clearTimeout(speakTimeout);
+            speakTimeout = null;
+        }
+    }
 
     function speak(text) {
         if ('speechSynthesis' in window) {
             const utterance = ('SpeechSynthesisUtterance' in window)
                 ? new SpeechSynthesisUtterance(String(text))
                 : { text: String(text) };
-            if (typeof window.speechSynthesis.cancel === 'function') {
-                window.speechSynthesis.cancel();
-            }
-            window.speechSynthesis.speak(utterance);
+            cancelSpeech();
+            // Small delay to ensure cancel completes before speaking
+            setTimeout(() => {
+                window.speechSynthesis.speak(utterance);
+            }, 50);
         }
     }
 
@@ -158,10 +187,15 @@ document.addEventListener('DOMContentLoaded', () => {
             speakTimeout = setTimeout(() => speak(word), 1000);
         } else {
             currentColorIndex = Math.max(0, Math.min(currentColorIndex, colors.length - 1));
-            const { name, emoji, hex } = colors[currentColorIndex];
+            const { name, emoji, hex, needsOutline } = colors[currentColorIndex];
 
             el.display.textContent = name;
             el.display.style.color = hex;
+            if (needsOutline) {
+                el.display.classList.add('needs-outline');
+            } else {
+                el.display.classList.remove('needs-outline');
+            }
 
             el.objects.innerHTML = '';
             const object = document.createElement('div');
@@ -218,30 +252,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     modeSelect.addEventListener('change', () => {
+        cancelSpeech();
         mode = modeSelect.value;
         if (mode === 'numbers') {
             currentNumber = 1;
-            card.classList.remove('flipped');
+            card.classList.remove('flipped', 'flipped-color');
             showFace('numbers');
         } else if (mode === 'alphabet') {
             currentLetterIndex = 0;
+            card.classList.remove('flipped-color');
             card.classList.add('flipped');
             showFace('alphabet');
         } else {
             currentColorIndex = 0;
             card.classList.remove('flipped');
+            card.classList.add('flipped-color');
             showFace('colors');
         }
         updateDisplay();
     });
 
     document.addEventListener('keydown', (e) => {
+        // Don't handle arrow keys when focus is on form elements
+        const activeElement = document.activeElement;
+        if (activeElement && (activeElement.tagName === 'SELECT' || activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+            return;
+        }
         if (e.key === 'ArrowRight') {
             handleNext();
         } else if (e.key === 'ArrowLeft') {
             handlePrev();
         }
     });
+
+    // Touch/swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const minSwipeDistance = 50;
+
+    card.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    card.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const swipeDistance = touchEndX - touchStartX;
+        if (Math.abs(swipeDistance) >= minSwipeDistance) {
+            if (swipeDistance > 0) {
+                handlePrev(); // Swipe right = previous
+            } else {
+                handleNext(); // Swipe left = next
+            }
+        }
+    }, { passive: true });
 
     showFace('numbers');
     // Initial display update

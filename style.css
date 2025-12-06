@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
     background-color: #f0f8ff; /* AliceBlue */
@@ -5,14 +9,16 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
+    padding: 10px;
     perspective: 1000px;
 }
 
 .card {
     position: relative;
     width: 360px;
+    max-width: 100%;
     height: 480px;
     transition: transform 0.6s;
     transform-style: preserve-3d;
@@ -20,6 +26,10 @@ body {
 
 .card.flipped {
     transform: rotateY(180deg);
+}
+
+.card.flipped-color {
+    transform: rotateX(180deg);
 }
 
 .card-face {
@@ -46,6 +56,7 @@ body {
 
 .card-color {
     display: none;
+    transform: rotateX(180deg);
 }
 
 .number-display {
@@ -61,6 +72,19 @@ body {
     max-width: 100%;
 }
 
+/* Text outline for colors that don't show well on white background */
+.needs-outline {
+    text-shadow:
+        -2px -2px 0 #333,
+        2px -2px 0 #333,
+        -2px 2px 0 #333,
+        2px 2px 0 #333,
+        0 -2px 0 #333,
+        0 2px 0 #333,
+        -2px 0 0 #333,
+        2px 0 0 #333;
+}
+
 .mode-select {
     margin-bottom: 20px;
 }
@@ -70,14 +94,31 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    min-height: 150px;
-    width: 300px;
-    margin: 0 auto 20px;
+    gap: 5px;
+    min-height: 120px;
+    max-height: 200px;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto 15px;
+    overflow: hidden;
 }
 
 .object {
-    font-size: 100px;
+    font-size: 50px;
+    line-height: 1;
+}
+
+/* Scale emojis based on how many are displayed */
+.objects-display:has(.object:nth-child(5)) .object {
+    font-size: 45px;
+}
+
+.objects-display:has(.object:nth-child(7)) .object {
+    font-size: 40px;
+}
+
+.objects-display:has(.object:nth-child(9)) .object {
+    font-size: 35px;
 }
 
 .spelling-display {
@@ -106,8 +147,18 @@ button {
 button:hover {
     background-color: #5a9bd8;
 }
+
+button:active {
+    background-color: #3a7ab8;
+    transform: scale(0.95);
+}
+
 button:disabled {
     cursor: not-allowed;
+}
+
+button:disabled:active {
+    transform: none;
 }
 
 #prev-btn:disabled,
@@ -126,4 +177,66 @@ button:disabled {
 #color-prev-btn:disabled:hover,
 #color-next-btn:disabled:hover {
     background-color: #a9a9a9;
+}
+
+/* Responsive design for small screens */
+@media (max-width: 400px) {
+    .card {
+        width: 100%;
+        height: auto;
+        min-height: 420px;
+    }
+
+    .card-face {
+        padding: 15px;
+    }
+
+    .number-display {
+        font-size: 80px;
+        margin-bottom: 15px;
+    }
+
+    .card-color .number-display {
+        font-size: 60px;
+    }
+
+    .objects-display {
+        min-height: 100px;
+        max-height: 150px;
+    }
+
+    .object {
+        font-size: 40px;
+    }
+
+    .objects-display:has(.object:nth-child(5)) .object {
+        font-size: 35px;
+    }
+
+    .objects-display:has(.object:nth-child(7)) .object {
+        font-size: 30px;
+    }
+
+    .objects-display:has(.object:nth-child(9)) .object {
+        font-size: 28px;
+    }
+
+    .spelling-display {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    button {
+        font-size: 18px;
+        padding: 12px 20px;
+    }
+
+    .buttons {
+        gap: 10px;
+    }
+}
+
+/* Prevent iOS zoom on double-tap */
+button, select {
+    touch-action: manipulation;
 }
