@@ -60,6 +60,12 @@ describe('updateDisplay', () => {
       'fruit-prev-btn': createMockElement(),
       'fruit-next-btn': createMockElement(),
       'fruit-spelling-display': createMockElement(),
+      'celebration-container': createMockElement(),
+      'progress-dots': createMockElement(),
+      'home-screen': createMockElement(),
+      'home-btn': createMockElement(),
+      'mode-cards': createMockElement(),
+      'home-dots': createMockElement(),
     };
 
     const selectors = {
@@ -75,19 +81,51 @@ describe('updateDisplay', () => {
       getElementById: id => elements[id],
       createElement: () => createMockElement(),
       querySelector: sel => selectors[sel],
+      querySelectorAll: sel => {
+        if (sel === '.mode-card') return [];
+        return [];
+      },
       _listeners: {},
       addEventListener(event, handler) { this._listeners[event] = handler; },
       dispatchEvent(event) { const h = this._listeners[event.type]; h && h(event); }
     };
 
     global.document = document;
+
+    // Mock AudioContext for AudioManager
+    const mockAudioContext = {
+      createOscillator: () => ({
+        type: 'sine',
+        frequency: { setValueAtTime: jest.fn(), exponentialRampToValueAtTime: jest.fn() },
+        connect: jest.fn(),
+        start: jest.fn(),
+        stop: jest.fn()
+      }),
+      createGain: () => ({
+        gain: { setValueAtTime: jest.fn(), exponentialRampToValueAtTime: jest.fn(), linearRampToValueAtTime: jest.fn() },
+        connect: jest.fn()
+      }),
+      createBiquadFilter: () => ({
+        type: 'lowpass',
+        frequency: { setValueAtTime: jest.fn(), exponentialRampToValueAtTime: jest.fn() },
+        Q: { setValueAtTime: jest.fn() },
+        connect: jest.fn()
+      }),
+      destination: {},
+      currentTime: 0
+    };
+    global.AudioContext = jest.fn(() => mockAudioContext);
+    global.webkitAudioContext = jest.fn(() => mockAudioContext);
+
     global.window = {
       speechSynthesis: {
         speak: jest.fn(),
         cancel: jest.fn(),
         getVoices: jest.fn().mockReturnValue([])
       },
-      document
+      document,
+      AudioContext: global.AudioContext,
+      webkitAudioContext: global.webkitAudioContext
     };
 
     require('./script.js');
@@ -197,6 +235,10 @@ describe('updateDisplay', () => {
 
   test('Next and Previous buttons disable at boundaries', () => {
     const app = setup();
+
+    // Trigger mode selection to initialize display (since home screen is shown first)
+    app.modeSelect.value = 'numbers';
+    app.modeSelect.dispatchEvent(new Event('change'));
 
     // Initial state
     expect(app.prevBtn.disabled).toBe(true);

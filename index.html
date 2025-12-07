@@ -7,7 +7,42 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="mode-select">
+    <!-- Home Screen with Mode Cards -->
+    <div id="home-screen" class="home-screen">
+        <h1 class="home-title">What do you want to learn?</h1>
+        <div class="mode-cards-container">
+            <div class="mode-cards" id="mode-cards">
+                <div class="mode-card" data-mode="numbers">
+                    <span class="mode-icon">123</span>
+                    <span class="mode-label">Numbers</span>
+                </div>
+                <div class="mode-card" data-mode="alphabet">
+                    <span class="mode-icon">ABC</span>
+                    <span class="mode-label">Alphabet</span>
+                </div>
+                <div class="mode-card" data-mode="colors">
+                    <span class="mode-icon">🌈</span>
+                    <span class="mode-label">Colors</span>
+                </div>
+                <div class="mode-card" data-mode="shapes">
+                    <span class="mode-icon">⬡</span>
+                    <span class="mode-label">Shapes</span>
+                </div>
+                <div class="mode-card" data-mode="vegetables">
+                    <span class="mode-icon">🥕</span>
+                    <span class="mode-label">Vegetables</span>
+                </div>
+                <div class="mode-card" data-mode="fruits">
+                    <span class="mode-icon">🍎</span>
+                    <span class="mode-label">Fruits</span>
+                </div>
+            </div>
+        </div>
+        <div class="home-dots" id="home-dots"></div>
+    </div>
+
+    <!-- Hidden mode select for backward compatibility -->
+    <div class="mode-select" style="display: none;">
         <label for="mode-select">Learn:</label>
         <select id="mode-select">
             <option value="numbers">Numbers</option>
@@ -18,7 +53,11 @@
             <option value="fruits">Fruits</option>
         </select>
     </div>
-    <div class="card" id="card">
+
+    <!-- Back button for returning to home -->
+    <button id="home-btn" class="home-btn" style="display: none;">🏠</button>
+
+    <div class="card" id="card" style="display: none;">
         <div class="card-face card-front">
             <div id="number-display" class="number-display">1</div>
             <div id="objects-display" class="objects-display"></div>
@@ -74,6 +113,13 @@
             </div>
         </div>
     </div>
+
+    <!-- Celebration effects container -->
+    <div id="celebration-container" class="celebration-container"></div>
+
+    <!-- Progress dots -->
+    <div id="progress-dots" class="progress-dots"></div>
+
     <script src="script.js"></script>
 </body>
 </html>
